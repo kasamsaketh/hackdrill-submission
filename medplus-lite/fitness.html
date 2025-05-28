@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Checklist</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        h1 {
+            color: #4a4a4a;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background-color: #f1f1f1;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        li:hover {
+            background-color: #e0e0e0;
+            transform: translateY(-2px);
+        }
+
+        .task-checkbox {
+            margin-right: 15px;
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: #888;
+            opacity: 0.7;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #777;
+            font-size: 14px;
+            padding: 10px 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 24px;
+            }
+            li {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fitness Checklist</h1>
+        <ul id="fitness-checklist">
+            <li>
+                <input type="checkbox" class="task-checkbox">
+                <span>30 Minutes Cardio</span>
+            </li>
+            <li>
+                <input type="checkbox" class="task-checkbox">
+                <span>Strength Training</span>
+            </li>
+            <li>
+                <input type="checkbox" class="task-checkbox">
+                <span>Drink 2 Liters of Water</span>
+            </li>
+            <li>
+                <input type="checkbox" class="task-checkbox">
+                <span>Stretching Exercises</span>
+            </li>
+            <li>
+                <input type="checkbox" class="task-checkbox">
+                <span>Eat 5 Servings of Fruits and Vegetables</span>
+            </li>
+            <li>
+                <input type="checkbox" class="task-checkbox">
+                <span>Get 7-8 Hours of Sleep</span>
+            </li>
+        </ul>
+        <footer>
+            &copy; 2024 Fitness Tracker
+        </footer>
+    </div>
+
+    <script>
+        // Event listener for checkbox status change
+        document.getElementById('fitness-checklist').addEventListener('change', function(e) {
+            if (e.target.classList.contains('task-checkbox')) {
+                e.target.nextElementSibling.classList.toggle('completed');
+            }
+        });
+    </script>
+</body>
+</html>

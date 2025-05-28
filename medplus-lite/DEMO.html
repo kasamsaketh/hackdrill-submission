@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Health Check Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            padding: 30px 40px;
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+        label {
+            font-size: 1.2rem;
+            display: block;
+            margin-top: 20px;
+            color: #555;
+        }
+        select {
+            width: 100%;
+            padding: 15px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.1rem;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 30px;
+            border: none;
+            background-color: #2f88ee;
+            color: white;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2298e7;
+        }
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+        <link rel="stylesheet" href="css/font-awesome.min.css">
+    
+</head>
+<body>
+    <div class="container">
+        <h1>Health Check</h1>
+        <form id="healthForm">
+            <div id="question-container">
+                <label id="question-text">How are you feeling today?</label>
+                <select id="answer" required>
+                    <option value="" disabled selected>Select an option</option>
+                    <option value="good">Good</option>
+                    <option value="okay">Okay</option>
+                    <option value="bad">Bad</option>
+                </select>
+            </div>
+            <button type="button" id="next-button" onclick="nextQuestion()">Next</button>
+        </form>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "How are you feeling today?",
+                options: ["Good", "Okay", "Bad"],
+                id: "feeling"
+            },
+            {
+                question: "Did you sleep well last night?",
+                options: ["Yes", "No"],
+                id: "sleep"
+            },
+            {
+                question: "Do you have any pain or discomfort?",
+                options: ["Yes", "No"],
+                id: "pain"
+            },
+            {
+                question: "How is your appetite?",
+                options: ["Normal", "Low", "High"],
+                id: "appetite"
+            }
+        ];
+
+        let currentQuestion = 0;
+        const responses = {};
+
+        function nextQuestion() {
+            const answerSelect = document.getElementById('answer');
+            const selectedAnswer = answerSelect.value;
+
+            if (!selectedAnswer) {
+                alert("Please select an option");
+                return;
+            }
+
+            // Store the response
+            responses[questions[currentQuestion].id] = selectedAnswer;
+
+            // Move to the next question
+            currentQuestion++;
+
+            if (currentQuestion < questions.length) {
+                // Update question and options
+                document.getElementById('question-text').textContent = questions[currentQuestion].question;
+                answerSelect.innerHTML = questions[currentQuestion].options.map(option => `
+                    <option value="${option.toLowerCase()}">${option}</option>
+                `).join('');
+                answerSelect.value = ""; // Reset the select dropdown
+            } else {
+                displayResult();
+            }
+        }
+
+        function displayResult() {
+            const resultDiv = document.getElementById('result');
+            const { feeling, sleep, pain, appetite } = responses;
+
+            let message = "Based on your answers, ";
+
+            if (feeling === "good" && sleep === "yes" && pain === "no" && appetite === "normal") {
+                message += "you seem to be in good health! Keep up the good habits.";
+            } else if (feeling === "okay" || pain === "yes" || appetite === "low") {
+                message += "you may have mild symptoms. Consider taking rest, eating well, and staying hydrated.";
+            } else if (feeling === "bad" || sleep === "no" || pain === "yes" || appetite === "low") {
+                message += "it's advisable to monitor your condition closely and seek medical advice if needed.";
+            } else {
+                message += "the assessment is inconclusive. Please review your answers.";
+            }
+
+            resultDiv.textContent = message;
+            document.getElementById('question-container').style.display = "none";
+            document.getElementById('next-button').style.display = "none";
+        }
+
+        // Initialize first question options
+        document.getElementById('answer').innerHTML = questions[0].options.map(option => `
+            <option value="${option.toLowerCase()}">${option}</option>
+        `).join('');
+    </script>
+</body>
+</html>
