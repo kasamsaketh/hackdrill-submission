@@ -13,25 +13,63 @@
       <h2>Patient Login</h2>
       <p>Please fill in your details to continue</p>
 
-      <form action="#" method="POST">
-        <label for="name">Patient Name</label>
-        <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+  <form id="loginForm">
+  <label for="email">Patient Email</label>
+  <input type="email" id="email" name="email" required>
 
-        <label for="age">Patient Age</label>
-        <input type="number" id="age" name="age" placeholder="Enter your age" required>
+  <label for="password">Password</label>
+  <input type="password" id="password" name="password" required>
 
-        <label for="email">Patient Email</label>
-        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+  <button type="submit">Login</button>
+</form>
+<p id="error" style="color:red;"></p>
 
-        <label for="mobile">Patient Mobile Number</label>
-        <input type="tel" id="mobile" name="mobile" placeholder="Enter your mobile number" required>
-
-        <label for="location">Patient Location</label>
-        <input type="text" id="location" name="location" placeholder="Enter your city or address" required>
-
-        <button type="submit">Login</button>
-      </form>
     </div>
   </div>
+ <!-- Firebase SDKs -->
+<!-- Use compat version for backward compatibility -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+
+
+<script>
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyDQZib7BhXpdOV0pA6WdIoIQ9HatkZy97Q",
+    authDomain: "medplus-auth.firebaseapp.com",
+    projectId: "medplus-auth",
+    storageBucket: "medplus-auth.appspot.com",
+    messagingSenderId: "256136869036",
+    appId: "1:256136869036:web:3fecf5d955d53b92a1db09"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+
+  // Login form handler
+  const loginForm = document.getElementById('loginForm');
+  const errorText = document.getElementById('error');
+
+  loginForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    auth.signInWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        alert("Login successful! Welcome, " + userCredential.user.email);
+        window.location.href = "profile.html";
+      })
+      .catch((error) => {
+        console.error("Login error:", error);
+        errorText.textContent = error.message;
+      });
+  });
+</script>
+
+
+
 </body>
 </html>

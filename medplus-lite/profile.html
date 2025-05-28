@@ -15,7 +15,9 @@
     <!-- User Info -->
     <div class="user-info">
       <div>
-        <h3>Ravi Kumar</h3>
+        <h2 id="username">Welcome!</h2>
+<p id="custom-info"></p>
+
         <p>Age: 9 | Blood Group: B+</p>
       </div>
       <button class="edit-btn">Edit Profile</button>
@@ -61,6 +63,47 @@
       </div>
     </div>
   </section>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDQZib7BhXpdOV0pA6WdIoIQ9HatkZy97Q",
+    authDomain: "medplus-auth.firebaseapp.com",
+    projectId: "medplus-auth",
+    storageBucket: "medplus-auth.appspot.com",
+    messagingSenderId: "256136869036",
+    appId: "1:256136869036:web:3fecf5d955d53b92a1db09"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+
+  // Check login state
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      const email = user.email;
+      const name = email.split("@")[0]; // extract "saketh" from "saketh@gmail.com"
+
+      // Show dynamic content
+      document.getElementById('username').textContent = `Welcome, ${name}`;
+
+      // Optional: You could fetch more personalized data here
+      // For now, just a quick example:
+      if (name === 'saketh') {
+        document.getElementById('custom-info').textContent = "This is Saketh's health profile";
+      } else {
+        document.getElementById('custom-info').textContent = "General user profile";
+      }
+
+    } else {
+      // Not logged in, redirect to login page
+      window.location.href = "login.html";
+    }
+  });
+</script>
 
 </body>
 </html>
