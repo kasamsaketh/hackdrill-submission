@@ -16,9 +16,9 @@
     <div class="user-info">
       <div>
         <h2 id="username">Welcome!</h2>
-<p id="custom-info"></p>
-
-        <p>Age: 9 | Blood Group: B+</p>
+        <p id="custom-info"></p>
+        <p id="age"></p>
+        <p id="bloodgroup"></p>
       </div>
       <button class="edit-btn">Edit Profile</button>
     </div>
@@ -31,26 +31,22 @@
       </div>
       <div class="card">
         <h4>Calorie Intake</h4>
-        <p>Avg: 1700 kcal/day</p>
+        <p id="calories"></p>
       </div>
       <div class="card">
         <h4>Sleep Pattern</h4>
-        <p>Avg: 8 hrs/night</p>
+        <p id="sleep"></p>
       </div>
       <div class="card">
         <h4>Water Intake</h4>
-        <p>Avg: 1.8 L/day</p>
+        <p id="water"></p>
       </div>
     </div>
 
     <!-- Progress Overview -->
     <div class="progress-section">
       <h4>Progress Overview</h4>
-      <ul class="progress-list">
-        <li>Vitamin D levels improved by 15% in last 3 weeks.</li>
-        <li>Consistent bedtime logged 6 days/week.</li>
-        <li>90% goal achieved for water intake this month.</li>
-      </ul>
+      <ul class="progress-list" id="progress-list"></ul>
     </div>
 
     <!-- Settings -->
@@ -63,47 +59,68 @@
       </div>
     </div>
   </section>
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyDQZib7BhXpdOV0pA6WdIoIQ9HatkZy97Q",
-    authDomain: "medplus-auth.firebaseapp.com",
-    projectId: "medplus-auth",
-    storageBucket: "medplus-auth.appspot.com",
-    messagingSenderId: "256136869036",
-    appId: "1:256136869036:web:3fecf5d955d53b92a1db09"
-  };
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDQZib7BhXpdOV0pA6WdIoIQ9HatkZy97Q",
+      authDomain: "medplus-auth.firebaseapp.com",
+      projectId: "medplus-auth",
+      storageBucket: "medplus-auth.appspot.com",
+      messagingSenderId: "256136869036",
+      appId: "1:256136869036:web:3fecf5d955d53b92a1db09"
+    };
 
-  // Check login state
-  auth.onAuthStateChanged(user => {
-    if (user) {
-      const email = user.email;
-      const name = email.split("@")[0]; // extract "saketh" from "saketh@gmail.com"
+    firebase.initializeApp(firebaseConfig);
 
-      // Show dynamic content
-      document.getElementById('username').textContent = `Welcome, ${name}`;
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-      // Optional: You could fetch more personalized data here
-      // For now, just a quick example:
-      if (name === 'saketh') {
-        document.getElementById('custom-info').textContent = "This is Saketh's health profile";
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        const uid = user.uid;
+
+        try {
+          const docRef = db.collection("users").doc(uid);
+          const doc = await docRef.get();
+
+          if (doc.exists) {
+            const data = doc.data();
+
+            document.getElementById('username').textContent = `Welcome, ${data.name}`;
+            document.getElementById('custom-info').textContent = `${data.name}'s health profile`;
+
+            document.getElementById('age').textContent = `Age: ${data.age}`;
+            document.getElementById('bloodgroup').textContent = `Blood Group: ${data.bloodgroup}`;
+            document.getElementById('calories').textContent = `Avg: ${data.calorieintake}`;
+            document.getElementById('sleep').textContent = `Avg: ${data.sleeppattern} hrs/night`;
+            document.getElementById('water').textContent = `Avg: ${data.waterintake}`;
+
+            // Progress overview as list
+            const progressList = document.getElementById('progress-list');
+            const items = data.progressoverview.split("\n");
+            progressList.innerHTML = "";
+            items.forEach(point => {
+              const li = document.createElement('li');
+              li.textContent = point;
+              progressList.appendChild(li);
+            });
+
+          } else {
+            alert("No profile data found for this user.");
+          }
+        } catch (error) {
+          console.error("Error getting Firestore data:", error);
+        }
       } else {
-        document.getElementById('custom-info').textContent = "General user profile";
+        window.location.href = "login.html";
       }
-
-    } else {
-      // Not logged in, redirect to login page
-      window.location.href = "login.html";
-    }
-  });
-</script>
+    });
+  </script>
 
 </body>
 </html>
